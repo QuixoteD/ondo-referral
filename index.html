@@ -2,6 +2,8 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-St9W+Wwkb7A+cQNM4gYr3RyINGGV0s7OQaW8tmE0Z30=' 'sha256-3ak9ln12F45SbGyxb3dGIvUuRcGZe5DN885ON1GR1Q8=' 'sha256-eV2U68HpoFNq+lNGBcViVgigc7MLMXMBB8oA9eN5/B8=' 'sha256-nfq8sBopO6DSZKHaeP42TBVmVHtMfR0Q+GJnEqMqjBM='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DRAFT - 261103-PILOT-CP Referral Pathways Ondo State vD1_7</title>
 <meta name="description" content="Who to refer a child or family to, in every ward of Ondo State. Draft pilot by Corus International.">
@@ -933,6 +935,24 @@ label.fld select { font-weight: 400; border: 2px solid var(--line); border-radiu
 .page .go { display: inline-block; background: var(--band); color: var(--band-ink); font-weight: 700; text-decoration: none; padding: 10px 16px; border-radius: 4px; margin: 8px 0 16px; }
 .page .src { font-size: 0.9rem; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 32px; }
 .tabs { display: none !important; }
+/* Suggest form (GOV.UK-style questions and error summary) */
+#sgForm h2 { font-size: 1.25rem; margin: 0 0 8px; }
+.fg { border: 0; padding: 0; margin: 0 0 28px; min-width: 0; }
+.fg legend { padding: 0; }
+.fg label { display: block; margin: 10px 0 4px; font-weight: 600; }
+.fg label.rad { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; margin: 8px 0; }
+.fg label.rad input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; }
+.fg input:not([type=radio]):not([type=checkbox]), .fg select, .fg textarea { width: 100%; max-width: 100%; padding: 8px; border: 2px solid var(--ink); border-radius: 0; background: var(--surface); color: var(--ink); font-size: 1rem; }
+.fg .count { font-size: 0.85rem; margin: 4px 0 0; }
+.err { color: #B10E1E; font-weight: 700; margin: 4px 0; }
+:root[data-theme="dark"] .err { color: #FF8A8A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .err { color: #FF8A8A; } }
+.errsum { border: 4px solid #B10E1E; padding: 12px 16px; margin-bottom: 24px; }
+.errsum h2 { margin-top: 0; }
+.picked { background: var(--tint-entry); padding: 8px 12px; }
+.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.sgtext { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg); border: 1px solid var(--line); padding: 12px; font-size: 0.9rem; }
+button.go { border: 0; cursor: pointer; font-size: 1.1rem; }
 @media (max-width: 899px) { .main { grid-template-rows: 1fr; } }
 @media (min-width: 900px) {
   .main.list-only { grid-template-columns: 1fr; }
@@ -978,6 +998,7 @@ label.fld select { font-weight: 400; border: 2px solid var(--line); border-radiu
       <a href="#guide" data-pg="guide">Referral guide</a>
       <a href="#contacts" data-pg="contacts">Contacts</a>
       <a href="#map" data-pg="map">Map</a>
+      <a href="#suggest" data-pg="suggest">Suggest a change</a>
     </nav>
   </header>
 
@@ -990,8 +1011,93 @@ label.fld select { font-weight: 400; border: 2px solid var(--line); border-radiu
         <li><a href="#guide">Referral guide</a><p>What to do, step by step, from first contact to referral. Taken from the NAPTIP Guidelines on the National Referral Mechanism.</p></li>
         <li><a href="#contacts">Find a contact</a><p>Filter <span id="homeCount">all</span> organisations by concern, local government area and ward. Download the filtered list as a PDF.</p></li>
         <li><a href="#map">Map of contacts</a><p>The same contacts and filters on a map of Ondo's local government areas and wards.</p></li>
+        <li><a href="#suggest">Suggest a change</a><p>Tell us about an organisation to add, wrong details, or an organisation to remove.</p></li>
       </ul>
       <p class="small">DRAFT pilot prepared by Corus International. Contacts are compiled from public sources and have not yet been confirmed by phone.</p>
+    </div>
+  </section>
+
+  <section class="page" id="pgSuggest" aria-labelledby="suggestH" hidden>
+    <div class="pin gut">
+      <h1 id="suggestH">Suggest a change to the contact list</h1>
+      <p class="lede">Tell us about an organisation to add, details that are wrong, or an organisation that should be removed.</p>
+      <p>We check every suggestion by phone or email before changing the list. Your contact details are used only for that check and are never shown on this site.</p>
+      <p class="small">This form does not send anything over the internet itself. When you finish, it opens an email on your device for you to check and send.</p>
+      <form id="sgForm" novalidate autocomplete="off">
+        <div class="errsum" id="sgErr" role="alert" tabindex="-1" hidden></div>
+
+        <fieldset class="fg" id="fg-kind"><legend><h2>1. What do you want to do?</h2></legend>
+          <p class="err" id="e-kind" hidden></p>
+          <label class="rad"><input type="radio" name="kind" value="add"> Add an organisation</label>
+          <label class="rad"><input type="radio" name="kind" value="change"> Change details of a listed organisation</label>
+          <label class="rad"><input type="radio" name="kind" value="remove"> Remove a listed organisation</label>
+        </fieldset>
+
+        <div class="fg" id="fg-org" hidden>
+          <h2>2. Which organisation?</h2>
+          <p class="err" id="e-org" hidden></p>
+          <p class="picked" id="sgPicked" hidden></p>
+          <label for="sgOrg">Name as shown in the list</label>
+          <input id="sgOrg" list="sgOrgList" maxlength="150">
+          <datalist id="sgOrgList"></datalist>
+        </div>
+
+        <div class="fg" id="fg-new" hidden>
+          <h2>2. About the organisation</h2>
+          <p class="err" id="e-new" hidden></p>
+          <label for="sgNName">Name of the organisation</label><input id="sgNName" maxlength="150">
+          <label for="sgNLga">Local government area</label><select id="sgNLga"></select>
+          <label for="sgNTown">Town, village or ward (optional)</label><input id="sgNTown" maxlength="100">
+          <label for="sgNPhone">Organisation's phone (optional)</label><input id="sgNPhone" type="tel" inputmode="tel" maxlength="40">
+          <label for="sgNEmail">Organisation's email (optional)</label><input id="sgNEmail" type="email" maxlength="100">
+          <label for="sgNServ">What help do they give? (optional)</label><input id="sgNServ" maxlength="200">
+        </div>
+
+        <div class="fg" id="fg-detail">
+          <h2 id="sgDetailH">3. What should change?</h2>
+          <p class="err" id="e-detail" hidden></p>
+          <label for="sgDetail" id="sgDetailL">Describe the change. For example, the correct phone number, or why the organisation should be removed.</label>
+          <textarea id="sgDetail" rows="4" maxlength="600"></textarea>
+          <p class="count" id="c-detail"></p>
+        </div>
+
+        <fieldset class="fg" id="fg-how"><legend><h2>4. How do you know this?</h2></legend>
+          <p class="err" id="e-how" hidden></p>
+          <label class="rad"><input type="radio" name="how" value="I work for or volunteer with this organisation"> I work for or volunteer with this organisation</label>
+          <label class="rad"><input type="radio" name="how" value="I phoned or emailed them"> I phoned or emailed them</label>
+          <label class="rad"><input type="radio" name="how" value="I visited them"> I visited them</label>
+          <label class="rad"><input type="radio" name="how" value="Public notice, website or official document"> Public notice, website or official document</label>
+          <label class="rad"><input type="radio" name="how" value="Other"> Other</label>
+          <label for="sgWhy">Explain how you know, including when (at least 20 characters)</label>
+          <textarea id="sgWhy" rows="3" maxlength="400"></textarea>
+          <p class="count" id="c-why"></p>
+        </fieldset>
+
+        <div class="fg" id="fg-you">
+          <h2>5. Your details</h2>
+          <p class="err" id="e-you" hidden></p>
+          <p>Give a phone number or an email address, or both, so we can confirm your suggestion.</p>
+          <label for="sgPhone">Your phone number</label><input id="sgPhone" type="tel" inputmode="tel" maxlength="40" autocomplete="tel">
+          <label for="sgEmail">Your email address</label><input id="sgEmail" type="email" maxlength="100" autocomplete="email">
+          <label for="sgName">Your name (optional)</label><input id="sgName" maxlength="100" autocomplete="name">
+          <label for="sgOrgYou">Your organisation (optional)</label><input id="sgOrgYou" maxlength="100" autocomplete="organization">
+          <div class="hp" aria-hidden="true"><label for="sgWebsite">Leave this empty</label><input id="sgWebsite" tabindex="-1" autocomplete="off"></div>
+        </div>
+
+        <div class="fg" id="fg-ok">
+          <p class="err" id="e-ok" hidden></p>
+          <label class="rad"><input type="checkbox" id="sgOk"> I agree that my contact details will be used only to confirm this suggestion, and will not be published.</label>
+        </div>
+
+        <button type="submit" class="go">Continue to email</button>
+      </form>
+
+      <div id="sgDone" hidden>
+        <h2 tabindex="-1" id="sgDoneH">Check and send your email</h2>
+        <p id="sgDoneP"></p>
+        <pre class="sgtext" id="sgText"></pre>
+        <p><button type="button" class="dl" id="sgCopy">Copy the text</button> <button type="button" class="dl" id="sgBack">Change my answers</button></p>
+      </div>
     </div>
   </section>
 
@@ -1385,7 +1491,9 @@ function showDetail(r) {
       ${row("Services", `<div class="tags">${r.s.map(s => `<span>${esc(s)}</span>`).join("")}</div>`)}
       ${row("Helps with", esc(r.c.map(c => catName[c]).join(", ")))}
     </dl>
-    ${!r.p && !r.e ? `<p>No phone number is listed yet. Ask at the LGA secretariat or a nearby first contact for directions.</p>` : ""}`);
+    ${!r.p && !r.e ? `<p>No phone number is listed yet. Ask at the LGA secretariat or a nearby first contact for directions.</p>` : ""}
+    <p><a href="#suggest/${esc(r.id)}" id="sgFromSheet">Suggest a change to this entry</a></p>`);
+  $("sgFromSheet").onclick = () => closeSheet();
   $("sheetBody").querySelectorAll(".copy").forEach(b => b.onclick = () => copyText(b.dataset.copy));
 }
 $("list").addEventListener("click", e => { const b = e.target.closest(".card"); if (b) showDetail(listed[+b.dataset.i]); });
@@ -1508,23 +1616,139 @@ function highlight(r) {
 }
 renderAll(true);
 
+/* ---------- suggest a change ----------
+   Sends nothing itself: builds a plain-text email that the user checks and sends from their own device.
+   All user text is handled as text only (textContent, never innerHTML) and cleaned before it goes into the email. */
+const SUGGEST_TO = ""; // SET BEFORE PUBLISHING: shared inbox for suggestions, e.g. "referrals@example.org". Empty = sending disabled.
+const SG = { rec: null };
+const sgClean = (v, max, oneLine, strict) => {
+  let t = String(v == null ? "" : v).normalize("NFC")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F​-‏‪-‮⁦-⁩﻿]/g, ""); // control and bidi-override characters
+  t = oneLine ? t.replace(/[\r\n\t]+/g, " ") : t.replace(/\r\n?/g, "\n").replace(/\n{3,}/g, "\n\n");
+  t = t.trim().slice(0, max);
+  if (!strict && /^[=+\-@\t]/.test(t)) t = "'" + t; // stop spreadsheet formulas if the email is pasted into Excel or Sheets. Phone and email (strict) are checked against tight patterns instead.
+  return t;
+};
+const PHONE_RE = /^\+?[0-9][0-9 ()-]{6,18}[0-9]$/;
+const EMAIL_RE = /^[^\s@<>()",;:\\[\]]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]{0,62}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,62}[A-Za-z0-9])?)+$/;
+const recById = Object.fromEntries(recs.map(r => [r.id, r]));
+$("sgOrgList").innerHTML = recs.map(r => `<option value="${esc(r.n + " (" + (r.l === "Statewide" ? "Statewide" : r.l) + ") [" + r.id + "]")}"></option>`).join("");
+$("sgNLga").innerHTML = `<option value="">Choose</option>` + lgaNames.map(l => `<option>${esc(l)}</option>`).join("") + `<option>Statewide</option><option>Not sure</option>`;
+const sgKind = () => (document.querySelector('input[name="kind"]:checked') || {}).value || "";
+const sgHow = () => (document.querySelector('input[name="how"]:checked') || {}).value || "";
+function sgShowKind() {
+  const k = sgKind();
+  $("fg-org").hidden = !(k === "change" || k === "remove");
+  $("fg-new").hidden = k !== "add";
+  $("sgDetailH").textContent = k === "add" ? "3. Anything else we should know? (optional)" : k === "remove" ? "3. Why should it be removed?" : "3. What should change?";
+  $("sgDetailL").textContent = k === "add" ? "For example, opening hours or who to ask for." : k === "remove" ? "For example, the office has closed or no longer gives this help." : "Describe the change. For example, the correct phone number.";
+}
+document.querySelectorAll('input[name="kind"]').forEach(r => r.onchange = sgShowKind);
+function sgPick(r) {
+  SG.rec = r;
+  $("sgPicked").hidden = !r;
+  $("sgPicked").textContent = r ? `Selected: ${r.n}, ${r.l === "Statewide" ? "Statewide" : r.l + " LGA"} (ID ${r.id})` : "";
+  $("sgOrg").value = "";
+}
+$("sgOrg").addEventListener("change", () => { const m = $("sgOrg").value.match(/\[([A-Z0-9-]{3,20})\]$/); if (m && recById[m[1]]) sgPick(recById[m[1]]); });
+const counter = (inp, out) => { const f = () => $(out).textContent = `${$(inp).value.length} of ${$(inp).maxLength} characters`; $(inp).addEventListener("input", f); f(); };
+counter("sgDetail", "c-detail"); counter("sgWhy", "c-why");
+
+function sgValidate() {
+  const errs = [];
+  const set = (id, msg, focus) => { $("e-" + id).textContent = msg; $("e-" + id).hidden = !msg; if (msg) errs.push([msg, focus]); };
+  const k = sgKind();
+  set("kind", k ? "" : "Choose what you want to do", 'input[name="kind"]');
+  if (k === "change" || k === "remove") {
+    if (!SG.rec) { const m = $("sgOrg").value.match(/\[([A-Z0-9-]{3,20})\]$/); if (m && recById[m[1]]) sgPick(recById[m[1]]); }
+    set("org", SG.rec ? "" : "Choose the organisation from the suggestions as you type its name", "#sgOrg");
+  } else set("org", "");
+  if (k === "add") {
+    const nm = sgClean($("sgNName").value, 150, true), ph = sgClean($("sgNPhone").value, 40, true, true), em = sgClean($("sgNEmail").value, 100, true, true);
+    set("new", nm.length < 3 ? "Enter the name of the organisation" : !$("sgNLga").value ? "Choose a local government area" :
+      (ph && !PHONE_RE.test(ph)) ? "Enter the organisation's phone number in a format like 0803 123 4567 or +234 803 123 4567" :
+      (em && !EMAIL_RE.test(em)) ? "Enter the organisation's email address in a format like name@example.com" : "", nm.length < 3 ? "#sgNName" : !$("sgNLga").value ? "#sgNLga" : ph && !PHONE_RE.test(ph) ? "#sgNPhone" : "#sgNEmail");
+  } else set("new", "");
+  set("detail", k !== "add" && sgClean($("sgDetail").value, 600).length < 10 ? (k === "remove" ? "Say why the organisation should be removed" : "Describe what should change") : "", "#sgDetail");
+  const why = sgClean($("sgWhy").value, 400);
+  set("how", !sgHow() ? "Choose how you know this" : why.length < 20 ? "Explain how you know this, in at least 20 characters" : "", !sgHow() ? 'input[name="how"]' : "#sgWhy");
+  const ph = sgClean($("sgPhone").value, 40, true, true), em = sgClean($("sgEmail").value, 100, true, true);
+  set("you", !ph && !em ? "Enter your phone number or email address" : ph && !PHONE_RE.test(ph) ? "Enter your phone number in a format like 0803 123 4567 or +234 803 123 4567" :
+    em && !EMAIL_RE.test(em) ? "Enter your email address in a format like name@example.com" : "", !ph && !em ? "#sgPhone" : ph && !PHONE_RE.test(ph) ? "#sgPhone" : "#sgEmail");
+  set("ok", $("sgOk").checked ? "" : "Tick the box to agree how your contact details are used", "#sgOk");
+  const box = $("sgErr");
+  box.hidden = !errs.length;
+  box.replaceChildren();
+  if (errs.length) {
+    const h = document.createElement("h2"); h.textContent = "There is a problem"; box.appendChild(h);
+    const ul = document.createElement("ul");
+    errs.forEach(([m, f]) => { const li = document.createElement("li"), a = document.createElement("a"); a.href = "#suggest"; a.textContent = m;
+      a.onclick = e => { e.preventDefault(); const el = document.querySelector(f); if (el) el.focus(); }; li.appendChild(a); ul.appendChild(li); });
+    box.appendChild(ul); box.focus();
+  }
+  return !errs.length;
+}
+function sgBuild() {
+  const k = sgKind(), r = SG.rec, L = [];
+  const line = (a, b) => { if (b) L.push(a + ": " + b); };
+  L.push("SUGGESTION FOR ONDO REFERRAL PATHWAYS", "Type: " + { add: "Add an organisation", change: "Change details", remove: "Remove an organisation" }[k], "");
+  if (k === "add") {
+    line("Organisation", sgClean($("sgNName").value, 150, true)); line("LGA", sgClean($("sgNLga").value, 40, true));
+    line("Town, village or ward", sgClean($("sgNTown").value, 100, true)); line("Phone", sgClean($("sgNPhone").value, 40, true, true));
+    line("Email", sgClean($("sgNEmail").value, 100, true, true)); line("Help given", sgClean($("sgNServ").value, 200, true));
+  } else {
+    line("Listed organisation", r.n); line("Record ID", r.id); line("LGA", r.l);
+  }
+  const det = sgClean($("sgDetail").value, 600);
+  if (det) L.push("", k === "add" ? "Other information:" : k === "remove" ? "Reason for removal:" : "Change requested:", det);
+  L.push("", "How they know: " + sgHow(), sgClean($("sgWhy").value, 400), "");
+  L.push("SUBMITTED BY (private: for confirmation only)");
+  line("Name", sgClean($("sgName").value, 100, true)); line("Organisation", sgClean($("sgOrgYou").value, 100, true));
+  line("Phone", sgClean($("sgPhone").value, 40, true, true)); line("Email", sgClean($("sgEmail").value, 100, true, true));
+  L.push("Consent: agreed that contact details are used only to confirm this suggestion.", "Data version: " + DATA.built);
+  return L.join("\n");
+}
+$("sgForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if ($("sgWebsite").value) return; // honeypot: filled only by automated scripts
+  if (!sgValidate()) return;
+  const body = sgBuild();
+  const subject = "Referral list suggestion: " + { add: "add", change: "change", remove: "remove" }[sgKind()] + (SG.rec ? " " + SG.rec.id : "");
+  $("sgText").textContent = body;
+  $("sgForm").hidden = true; $("sgDone").hidden = false;
+  if (SUGGEST_TO) {
+    $("sgDoneP").textContent = `Your email app should open with this message to ${SUGGEST_TO}. Check it and press send. If no email app opens, copy the text and send it to ${SUGGEST_TO}.`;
+    location.href = "mailto:" + encodeURIComponent(SUGGEST_TO).replace(/%40/g, "@") + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  } else {
+    $("sgDoneP").textContent = "Sending is not set up yet on this draft site. Your suggestion has not been sent. You can copy the text below.";
+  }
+  $("sgDoneH").focus();
+});
+$("sgCopy").onclick = () => copyText($("sgText").textContent);
+$("sgBack").onclick = () => { $("sgDone").hidden = true; $("sgForm").hidden = false; };
+function sgOpen(id) {
+  if (id && recById[id]) { sgPick(recById[id]); const c = document.querySelector('input[name="kind"][value="change"]'); if (!sgKind()) c.checked = true; }
+  sgShowKind();
+}
+
 /* ---------- pages ---------- */
 $("homeCount").textContent = recs.length.toLocaleString("en-GB");
-const PAGES = ["home", "guide", "contacts", "map"];
+const PAGES = ["home", "guide", "contacts", "map", "suggest"];
 function route() {
-  const h = location.hash.slice(1);
+  const [h, arg] = location.hash.slice(1).split("/");
   const pg = PAGES.includes(h) ? h : "home";
   const app = pg === "contacts" || pg === "map";
-  $("pgHome").hidden = pg !== "home"; $("pgGuide").hidden = pg !== "guide"; $("main").hidden = !app;
+  $("pgHome").hidden = pg !== "home"; $("pgGuide").hidden = pg !== "guide"; $("pgSuggest").hidden = pg !== "suggest";
+  if (pg === "suggest") sgOpen(/^[A-Z0-9-]{3,20}$/.test(arg || "") ? arg : ""); $("main").hidden = !app;
   document.querySelectorAll(".nav a").forEach(a => a.dataset.pg === pg ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
-  document.title = (pg === "home" ? "" : { guide: "Referral guide", contacts: "Contacts", map: "Map" }[pg] + " - ") + "DRAFT - Ondo Referral Pathways";
+  document.title = (pg === "home" ? "" : { guide: "Referral guide", contacts: "Contacts", map: "Map", suggest: "Suggest a change" }[pg] + " - ") + "DRAFT - Ondo Referral Pathways";
   if (app) {
     $("main").classList.toggle("list-only", pg === "contacts");
     setTab(pg === "map");
     if (pg === "map" && !mapObj) { initMap(); renderMap(true); renderList(); }
     else if (pg === "map") setTimeout(() => { mapObj.invalidateSize(); fitToCurrent(); }, 30);
   }
-  [$("pgHome"), $("pgGuide"), $("finder")].forEach(el => el.scrollTop = 0);
+  [$("pgHome"), $("pgGuide"), $("pgSuggest"), $("finder")].forEach(el => el.scrollTop = 0);
 }
 window.addEventListener("hashchange", route);
 route();
