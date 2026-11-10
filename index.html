@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-St9W+Wwkb7A+cQNM4gYr3RyINGGV0s7OQaW8tmE0Z30=' 'sha256-3ak9ln12F45SbGyxb3dGIvUuRcGZe5DN885ON1GR1Q8=' 'sha256-eV2U68HpoFNq+lNGBcViVgigc7MLMXMBB8oA9eN5/B8=' 'sha256-nfq8sBopO6DSZKHaeP42TBVmVHtMfR0Q+GJnEqMqjBM='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-St9W+Wwkb7A+cQNM4gYr3RyINGGV0s7OQaW8tmE0Z30=' 'sha256-3ak9ln12F45SbGyxb3dGIvUuRcGZe5DN885ON1GR1Q8=' 'sha256-lmYPGYdorICyIkEYNiMrWZbczueKScb/cI9jw3W4Rrk=' 'sha256-nfq8sBopO6DSZKHaeP42TBVmVHtMfR0Q+GJnEqMqjBM='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DRAFT - 261103-PILOT-CP Referral Pathways Ondo State vD1_7</title>
@@ -1435,7 +1435,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("sheet"
 
 $("pickCat").onclick = () => {
   const urgent = ["trafficking", "gbv", "child_protection", "child_labour"];
-  const btn = ([k, lab]) => `<button type="button" class="cat ${urgent.includes(k) ? "urgent" : ""}" data-cat="${k}" aria-pressed="${st.cat === k}"><b>${esc(lab)}</b><small>${esc(CAT_NOTE[k])}</small><small>${catCount[k].toLocaleString("en-GB")} contacts</small></button>`;
+  const btn = ([k, lab]) => `<button type="button" class="cat ${urgent.includes(k) ? "urgent" : ""}" data-cat="${esc(k)}" aria-pressed="${st.cat === k}"><b>${esc(lab)}</b><small>${esc(CAT_NOTE[k])}</small><small>${catCount[k].toLocaleString("en-GB")} contacts</small></button>`;
   const anyBtn = `<button type="button" class="cat" data-cat="" aria-pressed="${st.cat === ""}"><b>Any concern</b><small>Show every contact</small><small>${recs.length.toLocaleString("en-GB")} contacts</small></button>`;
   openSheet("What is the concern?", `<div class="grid-cats">${anyBtn}${DATA.cats.map(btn).join("")}</div>`);
   $("sheetBody").querySelectorAll(".cat").forEach(b => b.onclick = () => { st.cat = b.dataset.cat; st.shown = 40; closeSheet(); renderAll(true); });
@@ -1458,7 +1458,7 @@ $("pickLoc").onclick = () => {
     const l = $("selLga").value;
     const list = l ? (wardsBy[l] || []) : allWards;
     $("selWard").innerHTML = `<option value="">${l ? "All wards in " + esc(l) : "Any ward (all " + allWards.length + ")"}</option>` +
-      list.map(w => `<option value="${w.id}" ${w.id === selW ? "selected" : ""}>${esc(w.name)}${l ? "" : ", " + esc(w.l)} (${wardCount[w.id] || 0})</option>`).join("");
+      list.map(w => `<option value="${esc(w.id)}" ${w.id === selW ? "selected" : ""}>${esc(w.name)}${l ? "" : ", " + esc(w.l)} (${wardCount[w.id] || 0})</option>`).join("");
     note();
   };
   fillWards();

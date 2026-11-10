@@ -10,6 +10,10 @@ import base64, hashlib, pathlib, re, sys
 path = pathlib.Path(__file__).resolve().parent.parent / "index.html"
 html = path.read_text(encoding="utf-8")
 scripts = re.findall(r"<script>(.*?)</script>", html, flags=re.S)
+EXPECTED_SCRIPTS = 4  # Leaflet, markercluster, app, service-worker registration. Change only on purpose.
+if len(scripts) != EXPECTED_SCRIPTS:
+    sys.exit(f"Found {len(scripts)} <script> blocks, expected {EXPECTED_SCRIPTS}. "
+             "Check that nothing (for example contact data containing </script>) has added a script.")
 if re.search(r"<script\s+[^>]*>", html):
     sys.exit("Unexpected <script> with attributes; review the policy by hand.")
 hashes = " ".join(
