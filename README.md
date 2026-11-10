@@ -28,3 +28,10 @@ The single `index.html` now has four pages, addressed by hash:
 - `#guide`: referral guide taken from NAPTIP's *Guidelines on National Referral Mechanism for Protection and Assistance to Trafficked Persons in Nigeria* (2022).
 - `#contacts`: the filterable contact list. "Download PDF of this list" opens the browser's print dialog; choose "Save as PDF". The sheet shows the title, the filters applied, and the filtered contacts (name and type, role, place, phone and email, services capped at 20 words).
 - `#map`: the same filters on the map. The map loads only when this page is first opened.
+
+## Decision and data-change log
+
+- 2026-11-10: PDF sheet keeps the DRAFT watermark (contacts not yet confirmed by phone).
+- 2026-11-10: PDF Services column = service labels plus concern categories, de-duplicated, capped at 20 words. No new text written.
+- 2026-11-10: On the Map page with "List only what is in view" ticked, the PDF prints only the contacts in view and says so in the filter lines. Elsewhere it prints every contact matching the filters.
+- 2026-11-10: Record N00-0006 (NAPTIP Ondo State Command): added address, phone 08037869287 and email infoakure@naptip.gov.ng. Source: NAPTIP website, Ondo State Command page (https://naptip.gov.ng/ondo-state-command/), read 10 November 2026. No other records changed.
