@@ -19,3 +19,12 @@ Static copy of the app in the Drupal package, for testing on a phone over HTTPS.
 ## Note before publishing
 
 A GitHub Pages site is public on the internet, even when the repository is private (unless your organisation has GitHub Enterprise with private Pages). Anyone with the address can see the contact list.
+
+## Pages (v1.1)
+
+The single `index.html` now has four pages, addressed by hash:
+
+- `#home`: start page with links to the three sections and the emergency numbers.
+- `#guide`: referral guide taken from NAPTIP's *Guidelines on National Referral Mechanism for Protection and Assistance to Trafficked Persons in Nigeria* (2022).
+- `#contacts`: the filterable contact list. "Download PDF of this list" opens the browser's print dialog; choose "Save as PDF". The sheet shows the title, the filters applied, and the filtered contacts (name and type, role, place, phone and email, services capped at 20 words).
+- `#map`: the same filters on the map. The map loads only when this page is first opened.

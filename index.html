@@ -758,7 +758,8 @@ a { color: var(--link); }
 header.top { background: var(--band); color: var(--band-ink); }
 header.top .in { padding-block: 14px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; justify-content: space-between; }
 .brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.brand h1 { margin: 0; font-size: 1.35rem; font-weight: 700; letter-spacing: 0.01em; text-wrap: balance; }
+.brand .h1 { margin: 0; font-size: 1.35rem; font-weight: 700; letter-spacing: 0.01em; text-wrap: balance; }
+.brand .h1 a { color: inherit; text-decoration: none; }
 .brand p { margin: 0; font-size: 0.95rem; }
 .sos { display: flex; gap: 8px; flex-wrap: wrap; }
 .sos button { border: 0; border-radius: 999px; padding: 6px 12px; font-weight: 700; cursor: pointer; background: var(--accent); color: var(--accent-ink); font-size: 0.95rem; }
@@ -907,13 +908,64 @@ label.fld select { font-weight: 400; border: 2px solid var(--line); border-radiu
 .town-lbl { color: var(--ink); font-size: 12px; font-weight: 700; white-space: nowrap; text-shadow: 0 0 3px var(--map-land), 0 0 3px var(--map-land), 0 0 3px var(--map-land); pointer-events: none; }
 .maphint { position: absolute; z-index: 800; left: calc(10px + env(safe-area-inset-left, 0px)); bottom: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 0.85rem; max-width: calc(100% - 20px); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Pages: home, guide, contacts (list only), map. Plain GOV.UK-style text pages. */
+.nav { display: flex; gap: 4px 18px; flex-wrap: wrap; padding-block: 0 2px; }
+.nav a { color: var(--band-ink); text-decoration: none; font-weight: 700; padding: 8px 0 6px; border-bottom: 4px solid transparent; }
+.nav a:hover { text-decoration: underline; }
+.nav a[aria-current="page"] { border-bottom-color: var(--accent); }
+.page { min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--surface); }
+.page .pin { max-width: 760px; margin: 0 auto; padding-block: 24px 48px; font-size: 1.1rem; line-height: 1.5; }
+.page h1 { font-size: 2rem; line-height: 1.15; margin: 0 0 16px; text-wrap: balance; }
+.page h2 { font-size: 1.4rem; margin: 32px 0 10px; }
+.page h3 { font-size: 1.15rem; margin: 22px 0 8px; }
+.page p, .page ul, .page ol { margin: 0 0 14px; }
+.page li { margin-bottom: 6px; }
+.page .lede { font-size: 1.25rem; }
+.page .small { font-size: 0.9rem; }
+.page .warn { border-left: 8px solid var(--accent); background: var(--tint-spec); padding: 12px 16px; margin: 0 0 24px; }
+.topics { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+.topics li { border-bottom: 1px solid var(--line); padding: 14px 0; margin: 0; }
+.topics a { font-size: 1.25rem; font-weight: 700; }
+.topics p { margin: 4px 0 0; }
+.contents { border-left: 4px solid var(--line); padding-left: 14px; margin-bottom: 24px; }
+.contents ol { padding-left: 1.4em; }
+.page .go { display: inline-block; background: var(--band); color: var(--band-ink); font-weight: 700; text-decoration: none; padding: 10px 16px; border-radius: 4px; margin: 8px 0 16px; }
+.page .src { font-size: 0.9rem; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 32px; }
+.tabs { display: none !important; }
+@media (max-width: 899px) { .main { grid-template-rows: 1fr; } }
+@media (min-width: 900px) {
+  .main.list-only { grid-template-columns: 1fr; }
+  .main.list-only .mapwrap { display: none; }
+  .main.list-only .finder { border-right: 0; }
+  .main.list-only .finder > * { max-width: 820px; margin-left: auto; margin-right: auto; }
+}
+.dlrow { padding-block: 0 8px; }
+.dl { border: 2px solid var(--link); background: var(--surface); color: var(--ink); border-radius: 6px; padding: 6px 12px; font-weight: 700; cursor: pointer; }
+
+/* Print sheet: only the filtered contact list is printed. */
+#printSheet { display: none; }
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  html, body { height: auto !important; background: #fff !important; color: #000 !important; }
+  body.printing > *:not(#printSheet):not(.draft-wm) { display: none !important; }
+  body.printing #printSheet { display: block !important; font: 10pt/1.3 Arial, Helvetica, sans-serif; color: #000; }
+  #printSheet h1 { font-size: 15pt; margin: 0 0 4pt; }
+  #printSheet .f { margin: 0 0 2pt; }
+  #printSheet table { width: 100%; border-collapse: collapse; margin-top: 8pt; }
+  #printSheet th, #printSheet td { border: 0.5pt solid #777; padding: 3pt 4pt; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+  #printSheet th { background: #e6e6e6; }
+  #printSheet thead { display: table-header-group; }
+  #printSheet tr { break-inside: avoid; }
+  #printSheet .foot { margin-top: 8pt; font-size: 8pt; }
+}
 </style>
 
 <div class="app">
   <header class="top">
     <div class="in gut">
       <div class="brand">
-        <h1>Ondo Referral Pathways</h1>
+        <p class="h1"><a href="#home">Ondo Referral Pathways</a></p>
         <p>Who to refer a child or family to, in every LGA of Ondo State</p>
       </div>
       <div class="sos" aria-label="Emergency numbers">
@@ -921,9 +973,118 @@ label.fld select { font-weight: 400; border: 2px solid var(--line); border-radiu
         <button type="button" class="alt" id="sos627">Trafficking 627</button>
       </div>
     </div>
+    <nav class="nav gut" aria-label="Main">
+      <a href="#home" data-pg="home">Home</a>
+      <a href="#guide" data-pg="guide">Referral guide</a>
+      <a href="#contacts" data-pg="contacts">Contacts</a>
+      <a href="#map" data-pg="map">Map</a>
+    </nav>
   </header>
 
-  <div class="main" id="main">
+  <section class="page" id="pgHome" aria-labelledby="homeH" hidden>
+    <div class="pin gut">
+      <h1 id="homeH">Refer a child or family for help in Ondo State</h1>
+      <p class="lede">Use this service if you have identified a child or adult who may be a victim of trafficking, child labour, abuse or violence, and you need to know who to refer them to.</p>
+      <div class="warn"><strong>If someone is in danger now, call 112.</strong> To report trafficking or violence against a person, call NAPTIP on 627 (free).</div>
+      <ul class="topics">
+        <li><a href="#guide">Referral guide</a><p>What to do, step by step, from first contact to referral. Taken from the NAPTIP Guidelines on the National Referral Mechanism.</p></li>
+        <li><a href="#contacts">Find a contact</a><p>Filter <span id="homeCount">all</span> organisations by concern, local government area and ward. Download the filtered list as a PDF.</p></li>
+        <li><a href="#map">Map of contacts</a><p>The same contacts and filters on a map of Ondo's local government areas and wards.</p></li>
+      </ul>
+      <p class="small">DRAFT pilot prepared by Corus International. Contacts are compiled from public sources and have not yet been confirmed by phone.</p>
+    </div>
+  </section>
+
+  <section class="page" id="pgGuide" aria-labelledby="guideH" hidden>
+    <div class="pin gut" id="guideBody">
+<h1 id="guideH">Refer a trafficked person: step by step</h1>
+<p class="lede">What to do when you come into contact with a person you believe has been trafficked, including a child in exploitative work.</p>
+<div class="warn"><strong>If anyone is in danger now, call 112.</strong> To report trafficking, call NAPTIP on 627 or dial *627# (free), or 0703 000 0203.</div>
+<p class="small">This guide is taken from NAPTIP's Guidelines on National Referral Mechanism for Protection and Assistance to Trafficked Persons in Nigeria (2022). Text in quotation marks is the guidelines' own wording.</p>
+
+<nav class="contents" aria-label="Contents">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#g-who">Who must refer</a></li>
+    <li><a href="#g-principles">Principles to follow</a></li>
+    <li><a href="#g-step1">Step 1: identify and give basic emergency care</a></li>
+    <li><a href="#g-step2">Step 2: refer</a></li>
+    <li><a href="#g-step3">Step 3: what the service provider does next</a></li>
+    <li><a href="#g-rights">Rights of trafficked persons</a></li>
+    <li><a href="#g-forms">Referral forms</a></li>
+    <li><a href="#g-other">Other concerns</a></li>
+  </ol>
+</nav>
+
+<h2 id="g-who">1. Who must refer</h2>
+<p>"It shall be the responsibility of all stakeholders who come in contact with TPs [trafficked persons] to identify and refer them to service providers in the best position to provide effective specialized services."</p>
+<p>This includes any individual: the guidelines define an individual as "any public spirited person who calls the attention of service providers to the plight of a Trafficked Person and/or provides basic emergency care".</p>
+
+<h2 id="g-principles">2. Principles to follow</h2>
+<ol>
+  <li>Do no harm: "the rights of the TP shall be respected and protected at all times".</li>
+  <li>Provide all services with a victim-centred approach, based on discussion with the person and other relevant stakeholders.</li>
+  <li>Develop care plans jointly with the person.</li>
+  <li>Base assistance on informed consent and the person's own decisions.</li>
+  <li>"Where children are involved, the best interest of the child shall be the overriding factor."</li>
+  <li>Keep information confidential and do not discriminate.</li>
+  <li>"Cooperation with law enforcement shall not constitute a condition for providing assistance."</li>
+  <li>Be gender-responsive in all programming.</li>
+  <li>Record data by age, social status and location.</li>
+</ol>
+
+<h2 id="g-step1">3. Step 1: identify and give basic emergency care</h2>
+<p>"Where an individual comes in contact with a presumed TP, basic emergency care should be provided where needed and referral to NAPTIP or any other Service Provider."</p>
+<p>Basic emergency care is "the provision of basic welfare services; feeding, clothing, slippers, shoes, toiletries and any other basic amenities the presumed Trafficked Person requires."</p>
+
+<h2 id="g-step2">4. Step 2: refer</h2>
+<p>"Individuals/partners who come in contact with presumed TPs and who are not in a position to provide appropriate services shall refer them to the nearest relevant service providers for adequate protection and assistance immediately."</p>
+<ul>
+  <li>Use the formal referral form when a person is received. This is optional in an emergency.</li>
+  <li>In an emergency, notify informally (for example by phone), then complete the formal form afterwards for the record.</li>
+  <li>"Upon receipt of referrals, NAPTIP or any other service provider shall coordinate support, monitor and evaluate the rehabilitation and reintegration process."</li>
+</ul>
+<h3>NAPTIP Ondo State Command</h3>
+<p>3rd Floor, Ondo State Ministry of Culture and Tourism, Adegbemile House (Cultural Centre), beside Police Division, along Oba Adesida Road, GRA, Alagbaka, Akure.<br>
+Phone: <a href="tel:08037869287">0803 786 9287</a><br>
+Email: <a href="mailto:infoakure@naptip.gov.ng">infoakure@naptip.gov.ng</a></p>
+<p class="small">Source: NAPTIP website, Ondo State Command page, read 10 November 2026.</p>
+<a class="go" href="#contacts">Find a service provider near the person</a>
+
+<h2 id="g-step3">5. Step 3: what the service provider does next</h2>
+<p>You do not need to do these yourself. They explain what happens after referral, so you can tell the person what to expect.</p>
+<h3>Rehabilitation</h3>
+<p>Accommodation, health care, counselling, social inquiry, family tracing and empowerment. The service provider will provide short or long-term accommodation, develop a care plan jointly with the person, refer to other providers or NAPTIP for specialised support, and make sure the person knows their rights. NAPTIP shelters accommodate a person for up to six weeks, unless a longer stay is in their best interest.</p>
+<h3>Social inclusion</h3>
+<p>Support so the person feels safe, accepted and able to take part in their community. The person's consent must be obtained, using the consent form. Family, the person's advocate and community members are involved. Fostering, adoption or guardianship may be considered, through the appropriate government agency, where a person cannot return to their family.</p>
+<h3>Safe return</h3>
+<p>Return to a family or community must be based on the person's request or consent, and on a care plan for reintegration. Where return is not safe, for example for fear of reprisal, other options include a foster home, adoption, guardianship, long-term shelter or a safe house. Return happens with the Ministry of Women Affairs or the social welfare office in the person's local government area.</p>
+<h3>Follow-up</h3>
+<p>The service provider follows up for a minimum of three years after reintegration. If the provider can no longer give support, the case is referred to NAPTIP.</p>
+
+<h2 id="g-rights">6. Rights of trafficked persons</h2>
+<ul>
+  <li>Each person should have a personal care plan, designed with their consent and participation.</li>
+  <li>Services must respond to the person's age, gender and special needs, including health conditions and disability.</li>
+  <li>No discrimination on the basis of age, religion, sex, ethnicity, nationality, language, disability or other factors.</li>
+  <li>Personal information "shall be kept in confidence and revealed only with the consent of the TP or in exceptional cases", such as when the information is needed to save a life.</li>
+  <li>Service providers must take reasonable steps to protect the lives of people in their care, including when attending court.</li>
+</ul>
+
+<h2 id="g-forms">7. Referral forms</h2>
+<p>The guidelines set out standard tools: the directory of available services, referral form, referral tracking form, referral log book, referral register, consent form and inventory form. The forms are in the annexes of the guidelines, which you can download from the NAPTIP website (Resources, Downloads).</p>
+
+<h2 id="g-other">8. Other concerns</h2>
+<p>For child labour, sexual and gender-based violence, and other child protection concerns, choose the concern on the <a href="#contacts">Contacts</a> page. Short referral steps appear above the list.</p>
+
+<div class="src">
+  <h2>Source</h2>
+  <p>National Agency for the Prohibition of Trafficking in Persons (2022) <i>Guidelines on National Referral Mechanism for Protection and Assistance to Trafficked Persons in Nigeria</i>. Abuja: NAPTIP. Available at: https://naptip.gov.ng/download/guidelines-on-national-referral-mechanism/ (Accessed: 10 November 2026).</p>
+</div>
+    </div>
+  </section>
+
+  <div class="main" id="main" hidden>
     <div class="tabs" role="tablist">
       <button type="button" role="tab" id="tabList" aria-selected="true">List</button>
       <button type="button" role="tab" id="tabMap" aria-selected="false">Map filter</button>
@@ -954,6 +1115,7 @@ label.fld select { font-weight: 400; border: 2px solid var(--line); border-radiu
       <div id="resultsSlot"><div id="results">
         <div class="typebar gut" id="typebar" role="group" aria-label="Show or hide types of organisation"></div>
         <div class="summary gut" id="summary" aria-live="polite"></div>
+        <div class="gut dlrow"><button type="button" class="dl" id="dlPdf">Download PDF of this list</button></div>
         <div class="gut">
           <ul class="list" id="list"></ul>
           <button type="button" class="more" id="more" hidden>Show more</button>
@@ -992,6 +1154,7 @@ label.fld select { font-weight: 400; border: 2px solid var(--line); border-radiu
   <div class="bd" id="sheetBody"></div>
 </div>
 <div class="toast" id="toast" hidden></div>
+<div id="printSheet" aria-hidden="true"></div>
 
 <script>/* Leaflet 1.9.4, BSD-2-Clause, inlined */
 /* @preserve
@@ -1328,7 +1491,7 @@ function renderMap(fit) {
     m.on("click", e => { L.DomEvent.stopPropagation(e); showDetail(r); }); markerById[r.id] = m; return m; });
   cluster.addLayers(ms);
   paintAreas();
-  if (fit) { if ($("main").classList.contains("show-map") || window.innerWidth >= 900) fitToCurrent(); else pendingFit = true; }
+  if (fit) { if ($("map").clientWidth > 0) fitToCurrent(); else pendingFit = true; }
   else if (st.inView) renderList();
 }
 function fitToCurrent() {
@@ -1343,8 +1506,67 @@ function highlight(r) {
   selMarker = markerById[r.id];
   if (selMarker && selMarker._path) selMarker._path.classList.add("sel");
 }
-initMap();
 renderAll(true);
+
+/* ---------- pages ---------- */
+$("homeCount").textContent = recs.length.toLocaleString("en-GB");
+const PAGES = ["home", "guide", "contacts", "map"];
+function route() {
+  const h = location.hash.slice(1);
+  const pg = PAGES.includes(h) ? h : "home";
+  const app = pg === "contacts" || pg === "map";
+  $("pgHome").hidden = pg !== "home"; $("pgGuide").hidden = pg !== "guide"; $("main").hidden = !app;
+  document.querySelectorAll(".nav a").forEach(a => a.dataset.pg === pg ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  document.title = (pg === "home" ? "" : { guide: "Referral guide", contacts: "Contacts", map: "Map" }[pg] + " - ") + "DRAFT - Ondo Referral Pathways";
+  if (app) {
+    $("main").classList.toggle("list-only", pg === "contacts");
+    setTab(pg === "map");
+    if (pg === "map" && !mapObj) { initMap(); renderMap(true); renderList(); }
+    else if (pg === "map") setTimeout(() => { mapObj.invalidateSize(); fitToCurrent(); }, 30);
+  }
+  [$("pgHome"), $("pgGuide"), $("finder")].forEach(el => el.scrollTop = 0);
+}
+window.addEventListener("hashchange", route);
+route();
+/* Contents links inside the guide scroll without changing the page address. */
+$("guideBody").addEventListener("click", e => {
+  const a = e.target.closest('a[href^="#g-"]'); if (!a) return;
+  e.preventDefault(); const t = document.getElementById(a.getAttribute("href").slice(1)); if (t) t.scrollIntoView();
+});
+
+/* ---------- PDF of the filtered list (browser print to PDF) ---------- */
+function filterText() {
+  const bits = [];
+  bits.push("Concern: " + (st.cat ? catName[st.cat] : "Any concern"));
+  bits.push("Place: " + (st.lga ? (st.ward ? wardById[st.ward].name + " ward, " + st.lga + " LGA" : st.lga + " LGA") : "All of Ondo State"));
+  bits.push("Type of contact: " + (st.role || "All contacts"));
+  if (st.q.trim()) bits.push('Search: "' + st.q.trim() + '"');
+  if (st.off.size) bits.push("Hidden: " + GROUPS.filter(([k]) => st.off.has(k)).map(([, l]) => l).join(", "));
+  return bits;
+}
+function servicesText(r) {
+  const seen = new Set(), out = [];
+  r.s.concat(r.c.map(c => catName[c])).forEach(x => { const k = x.toLowerCase(); if (!seen.has(k)) { seen.add(k); out.push(x); } });
+  const w = out.join(", ").split(/\s+/);
+  return w.length > 20 ? w.slice(0, 20).join(" ").replace(/,$/, "") + "..." : w.join(" ");
+}
+function printList() {
+  const rows = current;
+  const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const where = r => [r.v, r.g ? wardById[r.g].name + " ward" : (r.w ? r.w + " ward" : ""), r.l === "Statewide" ? "Statewide" : r.l + " LGA"].filter(Boolean).filter((v, j, a) => a.indexOf(v) === j).join(", ");
+  const contact = r => [r.p, r.e].filter(Boolean).map(esc).join("<br>") || "Not listed";
+  $("printSheet").innerHTML = `<h1>Ondo Referral Pathways: contact list</h1>
+    ${filterText().map(t => `<p class="f">${esc(t)}</p>`).join("")}
+    <p class="f"><b>${rows.length.toLocaleString("en-GB")} contact${rows.length === 1 ? "" : "s"}</b>. Printed ${esc(date)}.</p>
+    <table><thead><tr><th style="width:24%">Organisation and type</th><th style="width:11%">Role</th><th style="width:20%">Where</th><th style="width:22%">Phone and email</th><th style="width:23%">Services</th></tr></thead>
+    <tbody>${rows.map(r => `<tr><td><b>${esc(r.n)}</b><br>${esc(r.t)}</td><td>${esc(r.r)}</td><td>${esc(where(r))}</td><td>${contact(r)}</td><td>${esc(servicesText(r))}</td></tr>`).join("")}</tbody></table>
+    <p class="foot">DRAFT. Compiled from public sources by Corus International; contacts not yet confirmed by phone. In an emergency call 112. Trafficking: NAPTIP 627.</p>`;
+  document.body.classList.add("printing");
+  const done = () => { document.body.classList.remove("printing"); window.removeEventListener("afterprint", done); };
+  window.addEventListener("afterprint", done);
+  window.print();
+}
+$("dlPdf").onclick = printList;
 </script>
 <script>
 if ('serviceWorker' in navigator) {
