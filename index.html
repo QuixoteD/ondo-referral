@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-St9W+Wwkb7A+cQNM4gYr3RyINGGV0s7OQaW8tmE0Z30=' 'sha256-3ak9ln12F45SbGyxb3dGIvUuRcGZe5DN885ON1GR1Q8=' 'sha256-lmYPGYdorICyIkEYNiMrWZbczueKScb/cI9jw3W4Rrk=' 'sha256-nfq8sBopO6DSZKHaeP42TBVmVHtMfR0Q+GJnEqMqjBM='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-St9W+Wwkb7A+cQNM4gYr3RyINGGV0s7OQaW8tmE0Z30=' 'sha256-3ak9ln12F45SbGyxb3dGIvUuRcGZe5DN885ON1GR1Q8=' 'sha256-Hg865sxerO4jIX7nS6KK7LdSWNQhROk2Z+52wypXlbs=' 'sha256-nfq8sBopO6DSZKHaeP42TBVmVHtMfR0Q+GJnEqMqjBM='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>DRAFT - 261103-PILOT-CP Referral Pathways Ondo State vD1_7</title>
@@ -968,13 +968,19 @@ button.go { border: 0; cursor: pointer; font-size: 1.1rem; }
 @media print {
   @page { size: A4 portrait; margin: 12mm; }
   html, body { height: auto !important; background: #fff !important; color: #000 !important; }
-  body.printing > *:not(#printSheet):not(.draft-wm) { display: none !important; }
-  body.printing #printSheet { display: block !important; font: 10pt/1.3 Arial, Helvetica, sans-serif; color: #000; }
-  #printSheet h1 { font-size: 15pt; margin: 0 0 4pt; }
-  #printSheet .f { margin: 0 0 2pt; }
-  #printSheet table { width: 100%; border-collapse: collapse; margin-top: 8pt; }
-  #printSheet th, #printSheet td { border: 0.5pt solid #777; padding: 3pt 4pt; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
-  #printSheet th { background: #e6e6e6; }
+  body.printing > *:not(#printSheet) { display: none !important; }
+  /* DRAFT on every page: a background tile one printable page high (A4 297mm - 2 x 12mm margins), repeated down the sheet. */
+  body.printing #printSheet { display: block !important; font: 8pt/1.25 Arial, Helvetica, sans-serif; color: #000;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 186 273'%3E%3Ctext x='93' y='150' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-weight='900' font-size='58' fill='%23FF6B00' fill-opacity='0.16' transform='rotate(-55 93 136)'%3EDRAFT%3C/text%3E%3C/svg%3E") repeat-y 0 0 / 100% 273mm; }
+  #printSheet h1 { font-size: 12pt; margin: 0 0 3pt; }
+  #printSheet h2 { font-size: 9pt; margin: 6pt 0 2pt; }
+  #printSheet .f { margin: 0 0 1pt; }
+  #printSheet table { width: 100%; border-collapse: collapse; margin-top: 4pt; }
+  #printSheet th, #printSheet td { border: 0.5pt solid #777; padding: 2pt 3pt; text-align: left; vertical-align: top; overflow-wrap: break-word; }
+  #printSheet th { background: rgba(0,0,0,0.08); }
+  #printSheet table.nat { font-size: 7pt; }
+  #printSheet table.nat td { padding: 1pt 3pt; }
   #printSheet thead { display: table-header-group; }
   #printSheet tr { break-inside: avoid; }
   #printSheet .foot { margin-top: 8pt; font-size: 8pt; }
@@ -1775,20 +1781,43 @@ function servicesText(r) {
   const w = out.join(", ").split(/\s+/);
   return w.length > 20 ? w.slice(0, 20).join(" ").replace(/,$/, "") + "..." : w.join(" ");
 }
+/* File name: yymmdd-<short filters>, letters, digits and hyphens only. */
+const CAT_SHORT = { child_labour: "ChildLabour", trafficking: "Trafficking", gbv: "GBV", child_protection: "ChildProtection", police: "Police",
+  legal: "Legal", education: "Education", skills: "Skills", health: "Health", birth_reg: "BirthReg", community: "Community", coordination: "Coord" };
+const ROLE_SHORT = { "First contact": "FirstContact", "Specialist service": "Specialist", "Coordination": "Coord" };
+function printName(inView) {
+  const d = new Date(), two = n => String(n).padStart(2, "0");
+  const squash = t => String(t).normalize("NFD").replace(/[^A-Za-z0-9]/g, "");
+  const parts = [String(d.getFullYear()).slice(2) + two(d.getMonth() + 1) + two(d.getDate())];
+  if (st.cat) parts.push(CAT_SHORT[st.cat] || squash(st.cat));
+  parts.push(st.lga ? (st.ward ? squash(wardById[st.ward].name) + "Ward-" : "") + squash(st.lga) : "AllOndo");
+  if (st.role) parts.push(ROLE_SHORT[st.role] || squash(st.role));
+  const q = squash(st.q).slice(0, 15); if (q) parts.push("Search" + q);
+  if (st.off.size) parts.push("Hid" + st.off.size);
+  if (inView) parts.push("MapView");
+  return parts.join("-").slice(0, 90);
+}
 function printList() {
   const inView = st.inView && mapShown();
   const rows = inView ? listed : current;
   const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   const where = r => [r.v, r.g ? wardById[r.g].name + " ward" : (r.w ? r.w + " ward" : ""), r.l === "Statewide" ? "Statewide" : r.l + " LGA"].filter(Boolean).filter((v, j, a) => a.indexOf(v) === j).join(", ");
-  const contact = r => [r.p, r.e].filter(Boolean).map(esc).join("<br>") || "Not listed";
+  const contact = r => [...(r.p ? r.p.split(/\s*;\s*/) : []), r.e].filter(Boolean).map(esc).join("<br>") || "Not listed";
+  const nat = `<h2>National helplines</h2><table class="nat"><tbody>
+    <tr><td><b>Emergency: Nigeria Police</b></td><td>112 (free from any phone)</td><td></td></tr>
+    ${DATA.national.map(h => `<tr><td><b>${esc(h.n)}</b></td><td>${esc(h.p)}</td><td>${esc(h.e || "")}</td></tr>`).join("")}</tbody></table>`;
   $("printSheet").innerHTML = `<h1>Ondo Referral Pathways: contact list</h1>
     ${filterText(inView).map(t => `<p class="f">${esc(t)}</p>`).join("")}
     <p class="f"><b>${rows.length.toLocaleString("en-GB")} contact${rows.length === 1 ? "" : "s"}</b>. Printed ${esc(date)}.</p>
+    ${nat}
+    <h2>Contacts</h2>
     <table><thead><tr><th style="width:24%">Organisation and type</th><th style="width:11%">Role</th><th style="width:20%">Where</th><th style="width:22%">Phone and email</th><th style="width:23%">Services</th></tr></thead>
     <tbody>${rows.map(r => `<tr><td><b>${esc(r.n)}</b><br>${esc(r.t)}</td><td>${esc(r.r)}</td><td>${esc(where(r))}</td><td>${contact(r)}</td><td>${esc(servicesText(r))}</td></tr>`).join("")}</tbody></table>
     <p class="foot">DRAFT. Compiled from public sources by Corus International; contacts not yet confirmed by phone. In an emergency call 112. Trafficking: NAPTIP 627.</p>`;
   document.body.classList.add("printing");
-  const done = () => { document.body.classList.remove("printing"); window.removeEventListener("afterprint", done); };
+  const oldTitle = document.title;
+  document.title = printName(inView); // browsers use the page title as the suggested PDF file name
+  const done = () => { document.body.classList.remove("printing"); document.title = oldTitle; window.removeEventListener("afterprint", done); };
   window.addEventListener("afterprint", done);
   window.print();
 }
