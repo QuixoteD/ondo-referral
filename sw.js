@@ -1,7 +1,7 @@
 /* Ondo Referral Pathways service worker (static hosting). Paths resolve against the folder the site is served from. */
-const CACHE = 'orp-gh-1.1.0-draft';
+const CACHE = 'orp-gh-1.2.0-draft';
 const SCOPE = new URL(self.registration.scope).pathname;
-const PRECACHE = ['./', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png']
+const PRECACHE = ['./', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/ad-cocoa-sample.svg']
   .map((p) => new URL(p, self.registration.scope).pathname);
 
 self.addEventListener('install', (event) => {
